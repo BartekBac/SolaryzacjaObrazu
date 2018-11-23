@@ -1,0 +1,6 @@
+LIBRARY "Asm"
+EXPORTS
+MyProc1
+MyProc2
+getPointer
+solarizeASM

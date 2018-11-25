@@ -1,6 +1,3 @@
-// FirstSteps.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include "Bitmap.h"
 #include "Algorithm.h"
@@ -15,42 +12,38 @@ int getCoresCount() {
 
 int main()
 {
-	Bitmap bmp("img/test_2_153_input.bmp");
-	//BYTE *data(bmp.getPixelDataPointerBGR());
+	srand(time(NULL));
+	clock_t start, stop;
+
+	string fileName = "";
+	cout << "Enter file path:" << endl;
+	cin >> fileName;
+	Bitmap bmp(fileName);
 	BYTE *data = bmp.getPixelDataPointerBGR();
-	int limit = 208;
-	BYTE limitB = 128;
-	//DWORD64 *a = new DWORD64(1000);
-	//bmp.printPixelsBGR();
+	cout << "Enter limit from range of <0 : 255>" << endl;
+	BYTE limitB = 0;
+	int limit = -1;
+	while (limit > 255 || limit < 0) {
+		cin >> limit;
+	}
+
+	limitB = limit;
 	long size = bmp.getImageSize();
 
-
-	// cout << "data_dat :: " << "B: " << int(*(data)) << ", " << "G: " << int(*(data+1)) << ", " << "R: " << int(*(data+2)) << endl;
-
-
-	// cout << getPointer(data, size, limitB);
-
-	//solarizeASM(data, size, limitB);
-	Algorithm::solarizeForNBytesUsingXCoresASM(data, limitB, size, 100);
-
-	///
-	// TODO: zrobiæ ¿eby dane by³y zapisywane na inny wskaŸnik danych, wtedy (nak³adanie paddingu siê rozwi¹¿e)
-	// Ale wtedy funkcje w CPP trzeba poprawiæ
-	///
-
-	// cout << "data_dat :: " << "B: " << int(*(data)) << ", " << "G: " << int(*(data + 1)) << ", " << "R: " << int(*(data + 2)) << endl;
-
-	bmp.saveBMPTo("img/testASM2.bmp");
-
-	/*cout << "Cores count: " << getCoresCount() << endl;
-	if (bmp.isOpen()) {
-		BYTE *data(bmp.getPixelDataPointerBGR());
-		Algorithm::solarizeForNBytesUsingXCores(data, limit, bmp.getImageSize(), getCoresCount());
-		bmp.saveBMPTo("img/testCPP.bmp");
-		cout << "Done." << endl;
-	}*/
-	cout << "Done." << endl;
-	getchar();
+	for (int i = 1; i <= 20; i++) {
+		if (bmp.isOpen()) {
+			BYTE *data(bmp.getPixelDataPointerBGR());
+			BYTE *result(bmp.getResultDataPointer());
+			start = clock();
+			//Algorithm::solarizeForNBytesUsingXCores(data, result, limitB, bmp.getImageSize(), i);
+			Algorithm::solarizeForNBytesUsingXCoresASM(data, result, limitB, bmp.getImageSize(), i);
+			stop = clock();
+			bmp.saveBMPTo("img/result.bmp");
+		}
+		cout << i << " threads - ";
+		cout << "duration: " << stop - start << "ms." << endl;
+	}
+	system("PAUSE");
 	return 0;
 }
 

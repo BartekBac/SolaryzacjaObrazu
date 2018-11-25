@@ -20,14 +20,15 @@ Bitmap::Bitmap(const string &filePath) {
 		
 		// fix size to 8 bytes padding
 		int padding = this->m_info.biSizeImage % 8;
-		this->size = this->m_info.biSizeImage + padding;
+		this->result_size = this->m_info.biSizeImage + padding;
 
 		// create an array that can take the pixel data
-		//m_bgr_data = new BYTE[m_info.biSizeImage];
-		m_bgr_data = new BYTE[this->size];
-		result_data = new BYTE[this->size];
+		m_bgr_data = new BYTE[this->m_info.biSizeImage];
+		// result_data need one row more allocated memeory to provide 8-bit parallel working algorithm
+		result_data = new BYTE[this->m_info.biSizeImage+8];
 
-		// read the pixels in bgr format (we can read without padding)
+
+		// read the pixels in bgr format
 		fin.read((char *)(m_bgr_data), m_info.biSizeImage);
 
 		// close the file
@@ -61,16 +62,6 @@ Bitmap::~Bitmap() {
 	}
 }
 
-void Bitmap::printPixelsBGR() {
-
-	BYTE* src(m_bgr_data);
-	cout << "B: " << int(*(src)) << " G: " << int(*(src + 1)) << " R: " << int(*(src + 2)) << endl;
-	/*for (unsigned int index(0); index < m_info.biSizeImage / 3; index++, src += 3) {
-		cout << "B: " << int(*(src)) << " G: " << int(*(src + 1)) << " R: " << int(*(src + 2)) << endl;
-	}*/
-
-}
-
 BYTE* Bitmap::getPixelDataPointerBGR() {
 	return this->m_bgr_data;
 }
@@ -80,9 +71,9 @@ BYTE* Bitmap::getResultDataPointer() {
 }
 
 long Bitmap::getImageSize() {
-	// return m_info.biSizeImage;
-	return this->size;
+	return m_info.biSizeImage;
 }
+
 
 void Bitmap::saveBMPTo(const string &filePath) {
 	// attempt to open the file specified
@@ -105,9 +96,9 @@ void Bitmap::saveBMPTo(const string &filePath) {
 		// read off the color data in the bass ackwards MS way
 		for (unsigned int index(0); index < number_of_bytes; index += 3)
 		{
-			red = m_bgr_data[index + 2];
-			green = m_bgr_data[index + 1];
-			blue = m_bgr_data[index];
+			red = result_data[index + 2];
+			green = result_data[index + 1];
+			blue = result_data[index];
 
 			fout.write((const char *)(&blue), sizeof(blue));
 			fout.write((const char *)(&green), sizeof(green));

@@ -23,10 +23,7 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <time.h>
 
-// using namespace std;
-extern "C" int _stdcall MyProc1(DWORD64 x, BYTE y);
-extern "C" int _stdcall MyProc2();
-extern "C" int _stdcall getPointer(BYTE* data_ptr, long size, BYTE limit);
-extern "C" int _stdcall solarizeASM(BYTE* data_ptr, long size, BYTE limit);
+extern "C" int _stdcall solarizeASM(BYTE* data_ptr, long size, BYTE limit, BYTE* result_ptr);
 #endif // !STDAFX_H

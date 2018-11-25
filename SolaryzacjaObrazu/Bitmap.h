@@ -16,10 +16,11 @@ private:
 
 	// pixel data
 	BYTE * m_bgr_data;
+	// data to transormation and save
 	BYTE * result_data;
 
-	// size of allocated data
-	long size;
+	// size of allocated result_data (assumes algorithm needed padding (8-bit))
+	long result_size;
 public:
 
 	Bitmap(const string &filePath);
@@ -29,7 +30,6 @@ public:
 	BYTE* getPixelDataPointerBGR();
 	BYTE* getResultDataPointer();
 	long getImageSize();
-	void printPixelsBGR();
 	void saveBMPTo(const string &filePatch);
 
 };
